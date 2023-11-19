@@ -3,6 +3,7 @@ CREATE TABLE user(
     user_name varchar(20) PRIMARY KEY,
     first_name varchar(20) NOT NULL,
     last_name varchar(20),
+    passwd varchar(30) NOT NULL,
     email_id varchar(226) NOT NULL,
     birthday date,
     bio text,
@@ -20,13 +21,68 @@ CREATE TABLE tweet (
     FOREIGN KEY (user_name) REFERENCES user(user_name)
 );
 
+CREATE TABLE comment (
+    comment_id binary(16) PRIMARY KEY,
+    tweet_id int,
+    commenting_user varchar(20),
+    comment_content text,
+    time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (commenting_user) REFERENCES user(user_name),
+    FOREIGN KEY (tweet_id) REFERENCES tweet(tweet_id)
+);
+
+CREATE TABLE Likes_Tweet (
+    user_name VARCHAR(255),
+    tweet_id INT,
+    PRIMARY KEY (user_name, tweet_id),
+    FOREIGN KEY (user_name) REFERENCES user(user_name),
+    FOREIGN KEY (tweet_id) REFERENCES tweet(tweet_id)
+);
+
+
+CREATE TABLE Retweet (
+    retweet_id INT PRIMARY KEY AUTO_INCREMENT,
+    retweeting_user VARCHAR(255) NOT NULL,
+    original_tweet_id INT NOT NULL,
+    retweet_content TEXT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (original_tweet_id) REFERENCES tweet(tweet_id),
+    FOREIGN KEY (retweeting_user) REFERENCES user(user_name)
+);
+
+CREATE TABLE Likes_Comment (
+    liking_user VARCHAR(255),
+    comment_id binary(16),
+    PRIMARY KEY (liking_user, comment_id),
+    FOREIGN KEY (liking_user) REFERENCES user(user_name),
+    FOREIGN KEY (comment_id) REFERENCES comment(comment_id)
+);
+
+CREATE TABLE Hashtag (
+    hashtag_name VARCHAR(255) PRIMARY KEY,
+    num_posts INT DEFAULT 0
+);
+
+CREATE TABLE Follows (
+    ufollower VARCHAR(255),
+    ufollowing VARCHAR(255),
+    PRIMARY KEY (ufollower, ufollowing),
+    FOREIGN KEY (ufollower) REFERENCES user(user_name),
+    FOREIGN KEY (ufollowing) REFERENCES user(user_name)
+);
+
+-- insert into table waste VALUES (UUID_TO_BIN(UUID()), 20)
+
 
 -- manipulation: inserting values
-INSERT INTO user (user_name, first_name, last_name, email_id, birthday, bio, num_followers, num_following)
+INSERT INTO user (user_name, first_name, last_name, email_id, passwd, birthday, bio, num_followers, num_following)
 VALUES
-    ('john_doe', 'John', 'Doe', 'john.doe@email.com', '1990-05-15', 'I love coding!', 100, 50),
-    ('jane_smith', 'Jane', 'Smith', 'jane.smith@email.com', '1985-08-22', 'Travel enthusiast', 200, 75),
-    ('bob_jones', 'Bob', 'Jones', 'bob.jones@email.com', '1995-02-10', 'Coffee addict ☕', 50, 30);
+    ('john_doe', 'John', 'Doe', 'john.doe@email.com', 'abcd','1990-05-15', 'I love coding!', 100, 50),
+    ('jane_smith', 'Jane', 'Smith', 'jane.smith@email.com', 'wanderlust', '1985-08-22', 'Travel enthusiast', 200, 75),
+    ('bob_jones', 'Bob', 'Jones', 'bob.jones@email.com','bobbybrew', '1995-02-10', 'Coffee addict ☕', 50, 30)
+    ('raj_1990', 'Raj', 'Kumar', 'raj@gmail.com', 'rajhi','1990-05-15', 'Passionate coder and tech enthusiast.', 200, 150),
+    ('priya_1985', 'Priya', 'Sharma', 'priya@gmail.com', 'samplepass', '1985-08-22', 'Travel lover and foodie.', 150, 100),
+    ('anu_1995', 'Anushka', 'Singh', 'anu@gmail.com', 'anu123', '1995-02-10', 'Movie buff and aspiring artist.', 100, 50);
 
 INSERT INTO Tweet (user_name, tweet_content, num_likes, num_retweets)
 VALUES
@@ -34,4 +90,49 @@ VALUES
     ('bob_jones', 'Hello Twitter! #FirstTweet', 15, 8),
     ('jane_smith', 'Coding all day! #ProgrammerLife', 20, 12),
     ('john_doe', 'I love DBMS!', 25, 18),
-    ('jane_smith', 'Traveling to new places', 30, 25);
+    ('jane_smith', 'Traveling to new places', 30, 25)
+    ('raj_1990', 'Just finished a coding marathon. Feeling accomplished! #coding #developer', 20, 10),
+    ('priya_1985', 'Exploring the streets of Mumbai today. Such a vibrant city! #travel #Mumbai', 15, 8),
+    ('anu_1995', 'Art is the expression of the soul. Here`s my latest creation. #art #creativity', 10, 5);
+
+INSERT INTO comment (comment_id, tweet_id, commenting_user, comment_content)
+VALUES
+    (UUID_TO_BIN(UUID()), 1, 'jane_smith', 'I love coding too! It is amazing'),
+    (UUID_TO_BIN(UUID()), 8, 'raj_1990', 'Great tweet! Totally agree.'),
+    (UUID_TO_BIN(UUID()), 8, 'priya_1985', 'Interesting thoughts. Keep it up!'),
+    (UUID_TO_BIN(UUID()), 6, 'anu_1995', 'Congratulations! Keep coding');
+
+INSERT INTO Retweet (retweeting_user, original_tweet_id, original_user, retweet_content) 
+VALUES 
+    ('user1', 1, 'This is a retweet content 1'),
+    ('user2', 2, 'This is a retweet content 2'),
+    ('user3', 3, 'This is a retweet content 3');
+
+-- Insert values into Likes_Tweet table
+INSERT INTO Likes_Tweet (user_name, tweet_id) 
+VALUES 
+    ('user1', 1),
+    ('user2', 2),
+    ('user3', 3);
+
+
+-- Insert values into Hashtag table
+INSERT INTO Hashtag (hashtag_name, num_posts) 
+VALUES 
+    ('programming', 5),
+    ('technology', 8),
+    ('coding', 10);
+
+-- Insert values into Has_Hashtag table
+INSERT INTO Has_Hashtag (tweet_id, hashtag_name) 
+VALUES 
+    (1, 'programming'),
+    (2, 'technology'),
+    (3, 'coding');
+
+-- Insert values into Follows table
+INSERT INTO Follows (follower, following) 
+VALUES 
+    ('user1', 'user2'),
+    ('user2', 'user3'),
+    ('user3', 'user1');
