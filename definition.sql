@@ -102,25 +102,25 @@ VALUES
     (UUID_TO_BIN(UUID()), 8, 'priya_1985', 'Interesting thoughts. Keep it up!'),
     (UUID_TO_BIN(UUID()), 6, 'anu_1995', 'Congratulations! Keep coding');
 
-INSERT INTO Retweet (retweeting_user, original_tweet_id, original_user, retweet_content) 
+INSERT INTO Retweet (retweeting_user, original_tweet_id, retweet_content) 
 VALUES 
-    ('user1', 1, 'This is a retweet content 1'),
-    ('user2', 2, 'This is a retweet content 2'),
-    ('user3', 3, 'This is a retweet content 3');
+    ('raj_1990', 2, 'Hey Twitter! I am reposting'),
+    ('bob_jones', 4, 'I love DBMS too'),
+    ('jane_smith', 3, 'With Priya in Mumbai :)');
 
 -- Insert values into Likes_Tweet table
 INSERT INTO Likes_Tweet (user_name, tweet_id) 
 VALUES 
-    ('user1', 1),
-    ('user2', 2),
-    ('user3', 3);
+    ('anu_1995', 7),
+    ('raj_1990', 8),
+    ('jane_smith', 7);
 
 
 -- Insert values into Hashtag table
 INSERT INTO Hashtag (hashtag_name, num_posts) 
 VALUES 
-    ('programming', 5),
-    ('technology', 8),
+    ('travel', 5),
+    ('art', 8),
     ('coding', 10);
 
 -- Insert values into Has_Hashtag table
@@ -131,8 +131,9 @@ VALUES
     (3, 'coding');
 
 -- Insert values into Follows table
-INSERT INTO Follows (follower, following) 
+INSERT INTO Follows (ufollower, ufollowing) 
 VALUES 
-    ('user1', 'user2'),
-    ('user2', 'user3'),
-    ('user3', 'user1');
+    ('jane_smith', 'priya_1985'),
+    ('john_doe', 'bob_jones'),
+    ('priya_1985', 'jane_smith'),
+    ('priya_1985', 'anu_1995');
