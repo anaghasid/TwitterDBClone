@@ -15,8 +15,6 @@ connection = pymysql.connect(host='localhost',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
 
-# Streamlit App
-st.title("Twitter Clone")
 
 # Function to execute SQL queries
 def execute_query(query, params=None):
@@ -41,20 +39,22 @@ def get_tweets():
 def display_tweet(tweet):
     st.write(f"**@{tweet['user_name']}**")
     st.write(tweet['tweet_content'])
-    st.write(f"🕒 {tweet['time_stamp']}   ❤️ {tweet['num_likes']}   🔁 {tweet['num_retweets']}")
+    st.write(f"🕒 {tweet['time_stamp']}")
 
 
 
 def like_tweet(tweet_id, user_name):
-    print(tweet_id)
     query = f"INSERT INTO Likes_Tweet (user_name, tweet_id) VALUES ('{user_name}', {tweet_id})"
     query2 = f"UPDATE tweet SET num_likes=num_likes+1 WHERE tweet_id={tweet_id}"
     execute_query(query)
     execute_query(query2)
 
 def add_comment(tweet_id, user_name, comment_content):
-    query = f"INSERT INTO Comment (tweet_id, commenting_user, comment_content, timestamp) VALUES ({tweet_id}, '{user_name}', '{comment_content}', CURRENT_TIMESTAMP)"
-    execute_query(query)
+    if comment_content:
+        query = f"INSERT INTO Comment (comment_id, tweet_id, commenting_user, comment_content) VALUES (UUID_TO_BIN(UUID()),{tweet_id}, '{user_name}', '{comment_content}')"
+        query2 = f"UPDATE tweet SET num_comments=num_comments+1 WHERE tweet_id={tweet_id}"
+        execute_query(query)
+        execute_query(query2)
 
 
 # Function to follow/unfollow a user
@@ -78,28 +78,35 @@ def register(username, password, first_name):
     query = "INSERT INTO tweet (user_name, password, time_stamp) VALUES (%s, %s, %s)"
     # user_database.append({"username": username, "password": password, "first_name": first_name})
 
+def get_comments(tweet_id):
+    query = f"SELECT * FROM comment WHERE tweet_id = {tweet_id} ORDER BY time_stamp"
+    comments = execute_query(query)
+    return comments
 
 
+st.title("Twitter")
 
-
-# Main
 def main():
-    # Create Tweet
-    tweet_content = st.text_area("What's happening?")
+    # tweet_content = st.text_area("What's happening?")
 
-    if st.button("Tweet"):
-        create_tweet("user123", tweet_content)
+    # if st.button("Tweet"):
+    #     create_tweet("user123", tweet_content)
 
-    st.title("Tweets from your friends")
+    st.title("Tweets")
     tweets = get_tweets()
     for tweet in tweets:
         display_tweet(tweet)
-        st.button(f"❤️", key=f"like{tweet['tweet_id']}" on_click=like_tweet, args=(tweet["tweet_id"], user["user_name"]))
-
-        # if st.button("❤️", key=f'like{tweet["tweet_id"]}'):
-        #     print("hi",tweet["tweet_id"])
-        #     like_tweet(tweet["tweet_id"],user)
-        st.divider()
+        st.button(f"❤️ {tweet['num_likes']}", key=f"like{tweet['tweet_id']}", on_click=like_tweet, args=(tweet["tweet_id"], user["user_name"]))
+        # st.button(f"🗨️ {tweet['num_comments']}", key=f"comment{tweet['tweet_id']}", on_click=add_comment, args=(tweet["tweet_id"], user["user_name"]))
+        if st.button(f"🗨️ {tweet['num_comments']}", key=f"comment{tweet['tweet_id']}"):
+            comment_content = st.text_input("Write your comment:")
+            add_comment(tweet["tweet_id"], user["user_name"], comment_content)
+        my_expander = st.expander(label="comments")
+        with my_expander:
+            comments = get_comments(tweet["tweet_id"])
+            for comment in comments:
+                st.write(f"{comment['commenting_user']} commented: {comment['comment_content']}")
+            st.divider()
         
 
     # Follow/Unfollow
@@ -124,7 +131,11 @@ def main():
 
 
 
-
+# COMMENT THE TWO LINES LATER
+user = {'user_name': 'john_doe', 'first_name': 'John', 'last_name': 'Doe', 
+        'passwd': 'abcd', 'email_id': 'john.doe@email.com', 
+        'birthday': '1990-05-15', 'bio': 'I love coding!', 'num_followers': 100, 'num_following': 50}
+main()
 
 # Sidebar for login and registration
 st.sidebar.title("Login / Register")

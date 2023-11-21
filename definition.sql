@@ -77,23 +77,23 @@ CREATE TABLE Follows (
 -- manipulation: inserting values
 INSERT INTO user (user_name, first_name, last_name, email_id, passwd, birthday, bio, num_followers, num_following)
 VALUES
-    ('john_doe', 'John', 'Doe', 'john.doe@email.com', 'abcd','1990-05-15', 'I love coding!', 100, 50),
-    ('jane_smith', 'Jane', 'Smith', 'jane.smith@email.com', 'wanderlust', '1985-08-22', 'Travel enthusiast', 200, 75),
-    ('bob_jones', 'Bob', 'Jones', 'bob.jones@email.com','bobbybrew', '1995-02-10', 'Coffee addict ☕', 50, 30)
-    ('raj_1990', 'Raj', 'Kumar', 'raj@gmail.com', 'rajhi','1990-05-15', 'Passionate coder and tech enthusiast.', 200, 150),
-    ('priya_1985', 'Priya', 'Sharma', 'priya@gmail.com', 'samplepass', '1985-08-22', 'Travel lover and foodie.', 150, 100),
-    ('anu_1995', 'Anushka', 'Singh', 'anu@gmail.com', 'anu123', '1995-02-10', 'Movie buff and aspiring artist.', 100, 50);
+    ('john_doe', 'John', 'Doe', 'john.doe@email.com', 'abcd','1990-05-15', 'I love coding!', 0, 0),
+    ('jane_smith', 'Jane', 'Smith', 'jane.smith@email.com', 'wanderlust', '1985-08-22', 'Travel enthusiast', 0, 0),
+    ('bob_jones', 'Bob', 'Jones', 'bob.jones@email.com','bobbybrew', '1995-02-10', 'Coffee addict ☕', 0, 0)
+    ('raj_1990', 'Raj', 'Kumar', 'raj@gmail.com', 'rajhi','1990-05-15', 'Passionate coder and tech enthusiast.', 0, 0),
+    ('priya_1985', 'Priya', 'Sharma', 'priya@gmail.com', 'samplepass', '1985-08-22', 'Travel lover and foodie.', 0, 0),
+    ('anu_1995', 'Anushka', 'Singh', 'anu@gmail.com', 'anu123', '1995-02-10', 'Movie buff and aspiring artist.', 0, 0);
 
 INSERT INTO Tweet (user_name, tweet_content, num_likes, num_retweets)
 VALUES
-    ('john_doe', 'This is my first tweet!', 10, 5),
-    ('bob_jones', 'Hello Twitter! #FirstTweet', 15, 8),
-    ('jane_smith', 'Coding all day! #ProgrammerLife', 20, 12),
-    ('john_doe', 'I love DBMS!', 25, 18),
-    ('jane_smith', 'Traveling to new places', 30, 25)
-    ('raj_1990', 'Just finished a coding marathon. Feeling accomplished! #coding #developer', 20, 10),
-    ('priya_1985', 'Exploring the streets of Mumbai today. Such a vibrant city! #travel #Mumbai', 15, 8),
-    ('anu_1995', 'Art is the expression of the soul. Here`s my latest creation. #art #creativity', 10, 5);
+    ('john_doe', 'This is my first tweet!', 0, 0),
+    ('bob_jones', 'Hello Twitter! #FirstTweet', 0, 0),
+    ('jane_smith', 'Coding all day! #ProgrammerLife', 0, 0),
+    ('john_doe', 'I love DBMS!', 0, 0),
+    ('jane_smith', 'Traveling to new places', 0, 0)
+    ('raj_1990', 'Just finished a coding marathon. Feeling accomplished! #coding #developer', 0, 0),
+    ('priya_1985', 'Exploring the streets of Mumbai today. Such a vibrant city! #travel #Mumbai', 0, 0),
+    ('anu_1995', 'Art is the expression of the soul. Here`s my latest creation. #art #creativity', 0, 0);
 
 INSERT INTO comment (comment_id, tweet_id, commenting_user, comment_content)
 VALUES
