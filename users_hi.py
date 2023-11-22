@@ -94,7 +94,7 @@ def main():
     tweets = get_tweets()
     for tweet in tweets:
         display_tweet(tweet)
-        st.button(f"❤️", key=f"like{tweet['tweet_id']}" on_click=like_tweet, args=(tweet["tweet_id"], user["user_name"]))
+        st.button(f"❤️", key=f"like{tweet['tweet_id']}", on_click=like_tweet, args=(tweet["tweet_id"], user["user_name"]))
 
         # if st.button("❤️", key=f'like{tweet["tweet_id"]}'):
         #     print("hi",tweet["tweet_id"])
