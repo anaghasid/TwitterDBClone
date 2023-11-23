@@ -84,7 +84,7 @@ VALUES
     ('priya_1985', 'Priya', 'Sharma', 'priya@gmail.com', 'samplepass', '1985-08-22', 'Travel lover and foodie.', 0, 0),
     ('anu_1995', 'Anushka', 'Singh', 'anu@gmail.com', 'anu123', '1995-02-10', 'Movie buff and aspiring artist.', 0, 0);
 
-INSERT INTO Tweet (user_name, tweet_content, num_likes, num_retweets)
+INSERT INTO Tweet (user_name, tweet_content, num_likes, num_comments)
 VALUES
     ('john_doe', 'This is my first tweet!', 0, 0),
     ('bob_jones', 'Hello Twitter! #FirstTweet', 0, 0),
@@ -93,7 +93,7 @@ VALUES
     ('jane_smith', 'Traveling to new places', 0, 0)
     ('raj_1990', 'Just finished a coding marathon. Feeling accomplished! #coding #developer', 0, 0),
     ('priya_1985', 'Exploring the streets of Mumbai today. Such a vibrant city! #travel #Mumbai', 0, 0),
-    ('anu_1995', 'Art is the expression of the soul. Here`s my latest creation. #art #creativity', 0, 0);
+    ('anu_1995', 'Art is the expression of the soul. Here`s my latest creation. #art #creativity', 0, 0 );
 
 INSERT INTO comment (comment_id, tweet_id, commenting_user, comment_content)
 VALUES
@@ -137,3 +137,45 @@ VALUES
     ('john_doe', 'bob_jones'),
     ('priya_1985', 'jane_smith'),
     ('priya_1985', 'anu_1995');
+
+
+-- trigger
+DELIMITER //
+CREATE TRIGGER update_tweet_likes
+AFTER INSERT ON Likes_Tweet
+FOR EACH ROW
+BEGIN
+    DECLARE tweet_likes INT;
+
+    -- Get the current number of likes for the tweet
+    SELECT num_likes INTO tweet_likes
+    FROM tweet
+    WHERE tweet_id = NEW.tweet_id;
+
+    -- Update the number of likes in the Tweet table
+    UPDATE Tweet
+    SET num_likes = tweet_likes + 1
+    WHERE tweet_id = NEW.tweet_id;
+END;
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER update_tweet_comments
+AFTER INSERT ON comment
+FOR EACH ROW
+BEGIN
+    DECLARE tweet_coms INT;
+
+    -- Get the current number of likes for the tweet
+    SELECT num_comments INTO tweet_coms
+    FROM tweet
+    WHERE tweet_id = NEW.tweet_id;
+
+    -- Update the number of likes in the Tweet table
+    UPDATE Tweet
+    SET num_comments = tweet_coms + 1
+    WHERE tweet_id = NEW.tweet_id;
+END;
+//
+DELIMITER ;

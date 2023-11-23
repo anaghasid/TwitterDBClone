@@ -37,24 +37,46 @@ def get_tweets():
     return execute_query(query)
 
 def display_tweet(tweet):
-    st.write(f"**@{tweet['user_name']}**")
+    st.button(f"**@{tweet['user_name']}**","""
+    <style>
+    button[kind="primary"] {
+        background: none!important;
+        border: none;
+        padding: 0!important;
+        color: black !important;
+        text-decoration: none;
+        cursor: pointer;
+        border: none !important;
+    }
+    </style>
+    """,key=f"{tweet['user_name']}{tweet['user_name']}")
     st.write(tweet['tweet_content'])
     st.write(f"🕒 {tweet['time_stamp']}")
+
+def get_tweets_with_users():
+    query = """
+    SELECT t.tweet_id, t.user_name, t.tweet_content, t.time_stamp, t.num_likes, t.num_retweets,
+           u.first_name, u.last_name
+    FROM Tweet t
+    JOIN User u ON t.user_name = u.user_name
+    ORDER BY t.time_stamp DESC
+    """
+    user_tweets = execute_query(query)
 
 
 
 def like_tweet(tweet_id, user_name):
+    print("hello",user)
     query = f"INSERT INTO Likes_Tweet (user_name, tweet_id) VALUES ('{user_name}', {tweet_id})"
-    query2 = f"UPDATE tweet SET num_likes=num_likes+1 WHERE tweet_id={tweet_id}"
     execute_query(query)
-    execute_query(query2)
+    # query2 = f"UPDATE tweet SET num_likes=num_likes+1 WHERE tweet_id={tweet_id}"
+    # execute_query(query2)
 
 def add_comment(tweet_id, user_name, comment_content):
+    print("in add comment fn",comment_content)
     if comment_content:
         query = f"INSERT INTO Comment (comment_id, tweet_id, commenting_user, comment_content) VALUES (UUID_TO_BIN(UUID()),{tweet_id}, '{user_name}', '{comment_content}')"
-        query2 = f"UPDATE tweet SET num_comments=num_comments+1 WHERE tweet_id={tweet_id}"
         execute_query(query)
-        execute_query(query2)
 
 
 # Function to follow/unfollow a user
@@ -68,9 +90,10 @@ def login(username, password):
     query = f"SELECT * FROM user WHERE user_name='{username}'"
     x = execute_query(query)
     print(x)
+    if x is None:
+        return None
     if x[0]["user_name"] == username and x[0]["passwd"] == password:
         return x[0]
-    return None
 
 
 # FIX THIS
@@ -87,26 +110,46 @@ def get_comments(tweet_id):
 st.title("Twitter")
 
 def main():
-    # tweet_content = st.text_area("What's happening?")
 
-    # if st.button("Tweet"):
-    #     create_tweet("user123", tweet_content)
+
+    tweet_content = st.text_area("What's happening?")
+    if st.button("Tweet"):
+        create_tweet(user["user_name"], tweet_content)
+
 
     st.title("Tweets")
     tweets = get_tweets()
     for tweet in tweets:
         display_tweet(tweet)
-        st.button(f"❤️ {tweet['num_likes']}", key=f"like{tweet['tweet_id']}", on_click=like_tweet, args=(tweet["tweet_id"], user["user_name"]))
-        # st.button(f"🗨️ {tweet['num_comments']}", key=f"comment{tweet['tweet_id']}", on_click=add_comment, args=(tweet["tweet_id"], user["user_name"]))
-        if st.button(f"🗨️ {tweet['num_comments']}", key=f"comment{tweet['tweet_id']}"):
-            comment_content = st.text_input("Write your comment:")
-            add_comment(tweet["tweet_id"], user["user_name"], comment_content)
-        my_expander = st.expander(label="comments")
-        with my_expander:
-            comments = get_comments(tweet["tweet_id"])
-            for comment in comments:
-                st.write(f"{comment['commenting_user']} commented: {comment['comment_content']}")
-            st.divider()
+
+        col1, col2 = st.columns([1,1])
+        with col1:
+            st.button(f"❤️ {tweet['num_likes']}", key=f"like{tweet['tweet_id']}", on_click=like_tweet, args=(tweet["tweet_id"], user["user_name"]))
+
+        with col2:
+            if st.button(f"🗨️ {tweet['num_comments']}", key=f"comment{tweet['tweet_id']}"):
+                pass
+                # st.button("Comment", on_click=add_comment, args=(tweet["tweet_id"], user["user_name"], comment_content))
+
+        # with col3:
+            # if st.button(f"🔁", key=f"retweet{tweet['tweet_id']}"):
+            #     pass
+
+        comments = get_comments(tweet["tweet_id"])
+        comment_label = "Be the first to comment:"
+        if comments:
+            comment_label = "Write your comment:"
+        
+        comment_content = st.text_area(comment_label,key=f"comm_text{tweet['tweet_id']}")
+        st.button("Comment", key=f"postcomment{tweet['tweet_id']}", on_click=add_comment, args=(tweet["tweet_id"], user["user_name"], comment_content))
+
+        # show comments if expanded
+        if comments:
+            my_expander = st.expander(label="Open comments")
+            with my_expander:
+                for comment in comments:
+                    st.write(f"{comment['commenting_user']} commented: {comment['comment_content']}")
+        st.divider()
         
 
     # Follow/Unfollow
@@ -129,12 +172,24 @@ def main():
     # trending_topics = get_trending_topics()
     # st.sidebar.write(trending_topics)
 
+    any_query = st.text_area(label="Type your own query!")
+    if st.button("Execute query"):
+        if "SELECT" in any_query:   
+            ans = execute_query(any_query)
+            st.write(ans)
+        else:
+            execute_query(any_query)
 
 
-# COMMENT THE TWO LINES LATER
+
 user = {'user_name': 'john_doe', 'first_name': 'John', 'last_name': 'Doe', 
         'passwd': 'abcd', 'email_id': 'john.doe@email.com', 
         'birthday': '1990-05-15', 'bio': 'I love coding!', 'num_followers': 100, 'num_following': 50}
+
+# user = {'user_name': 'priya_1985', 'first_name': 'Priya', 'last_name': 'Sharma', 'passwd': 'samplepass', 
+#         'email_id': 'priya@gmail.com', 'birthday': '1990-08-22', 
+#             'bio': 'Travel lover and foodie.', 'num_followers': 150, 'num_following': 100}
+
 main()
 
 # Sidebar for login and registration
@@ -150,6 +205,7 @@ if action == "Login":
         user = login(username, password)
         if user:
             st.success(f"Welcome, {user['first_name']}!")
+            print(user)
             main()
         else:
             st.error("Invalid username or password")
@@ -166,3 +222,4 @@ elif action == "Register":
     if st.sidebar.button("Register"):
         register(new_username, new_password, first_name)
         st.success("Registration successful. You can now login.")
+
