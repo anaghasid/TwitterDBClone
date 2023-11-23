@@ -63,6 +63,15 @@ CREATE TABLE Hashtag (
     num_posts INT DEFAULT 0
 );
 
+CREATE TABLE Has_Hashtag (
+    tweet_id INT,
+    hashtag_name VARCHAR(255),
+    PRIMARY KEY (tweet_id, hashtag_name),
+    FOREIGN KEY (tweet_id) REFERENCES tweet(tweet_id),
+    FOREIGN KEY (hashtag_name) REFERENCES Hashtag(hashtag_name)
+);
+
+
 CREATE TABLE Follows (
     ufollower VARCHAR(255),
     ufollowing VARCHAR(255),
@@ -73,8 +82,8 @@ CREATE TABLE Follows (
 
 -- insert into table waste VALUES (UUID_TO_BIN(UUID()), 20)
 
-
 -- manipulation: inserting values
+-- Insert into user table
 INSERT INTO user (user_name, first_name, last_name, email_id, passwd, birthday, bio, num_followers, num_following)
 VALUES
     ('john_doe', 'John', 'Doe', 'john.doe@email.com', 'abcd','1990-05-15', 'I love coding!', 0, 0),
@@ -95,6 +104,7 @@ VALUES
     ('priya_1985', 'Exploring the streets of Mumbai today. Such a vibrant city! #travel #Mumbai', 0, 0),
     ('anu_1995', 'Art is the expression of the soul. Here`s my latest creation. #art #creativity', 0, 0 );
 
+-- Insert into comment table
 INSERT INTO comment (comment_id, tweet_id, commenting_user, comment_content)
 VALUES
     (UUID_TO_BIN(UUID()), 1, 'jane_smith', 'I love coding too! It is amazing'),
@@ -102,6 +112,7 @@ VALUES
     (UUID_TO_BIN(UUID()), 8, 'priya_1985', 'Interesting thoughts. Keep it up!'),
     (UUID_TO_BIN(UUID()), 6, 'anu_1995', 'Congratulations! Keep coding');
 
+-- Insert into retweet table
 INSERT INTO Retweet (retweeting_user, original_tweet_id, retweet_content) 
 VALUES 
     ('raj_1990', 2, 'Hey Twitter! I am reposting'),
@@ -115,8 +126,8 @@ VALUES
     ('raj_1990', 8),
     ('jane_smith', 7);
 
-
 -- Insert values into Hashtag table
+
 INSERT INTO Hashtag (hashtag_name, num_posts) 
 VALUES 
     ('travel', 5),
@@ -131,6 +142,7 @@ VALUES
     (3, 'coding');
 
 -- Insert values into Follows table
+
 INSERT INTO Follows (ufollower, ufollowing) 
 VALUES 
     ('jane_smith', 'priya_1985'),

@@ -37,31 +37,21 @@ def get_tweets():
     return execute_query(query)
 
 def display_tweet(tweet):
-    st.button(f"**@{tweet['user_name']}**","""
-    <style>
-    button[kind="primary"] {
-        background: none!important;
-        border: none;
-        padding: 0!important;
-        color: black !important;
-        text-decoration: none;
-        cursor: pointer;
-        border: none !important;
-    }
-    </style>
-    """,key=f"{tweet['user_name']}{tweet['user_name']}")
+    if st.button(f"**@{tweet['user_name']}**",key=f"{tweet['user_name']}{tweet['tweet_id']}"):
+        x = get_tweets_with_users(tweet)
+        st.warning(f"User is {x[0]['f_name']} {x[0]['l_name']}. Wish them on {x[0]['bday']}")
     st.write(tweet['tweet_content'])
     st.write(f"🕒 {tweet['time_stamp']}")
 
-def get_tweets_with_users():
-    query = """
-    SELECT t.tweet_id, t.user_name, t.tweet_content, t.time_stamp, t.num_likes, t.num_retweets,
-           u.first_name, u.last_name
+def get_tweets_with_users(tweet):
+    query = f"""
+    SELECT t.user_name, u.first_name as f_name, u.last_name as l_name, u.birthday as bday
     FROM Tweet t
     JOIN User u ON t.user_name = u.user_name
-    ORDER BY t.time_stamp DESC
+    WHERE u.user_name = "{tweet['user_name']}"
     """
     user_tweets = execute_query(query)
+    return user_tweets
 
 
 
