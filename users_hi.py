@@ -174,15 +174,12 @@ def main():
 
 
 
-# user = {'user_name': 'john_doe', 'first_name': 'John', 'last_name': 'Doe', 
-#         'passwd': 'abcd', 'email_id': 'john.doe@email.com', 
-#         'birthday': '1990-05-15', 'bio': 'I love coding!', 'num_followers': 100, 'num_following': 50}
-
-user = {'user_name': 'priya_1985', 'first_name': 'Priya', 'last_name': 'Sharma', 'passwd': 'samplepass', 
-        'email_id': 'priya@gmail.com', 'birthday': '1990-08-22', 
-            'bio': 'Travel lover and foodie.', 'num_followers': 150, 'num_following': 100}
+user = {'user_name': 'john_doe', 'first_name': 'John', 'last_name': 'Doe', 
+        'passwd': 'abcd', 'email_id': 'john.doe@email.com', 
+        'birthday': '1990-05-15', 'bio': 'I love coding!', 'num_followers': 100, 'num_following': 50}
 
 main()
+
 
 # Sidebar for login and registration
 st.sidebar.title("Login / Register")

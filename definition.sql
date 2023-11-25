@@ -175,27 +175,6 @@ END;
 DELIMITER ;
 
 DELIMITER //
-CREATE TRIGGER update_tweet_comments
-AFTER INSERT ON comment
-FOR EACH ROW
-BEGIN
-    DECLARE tweet_coms INT;
-
-    -- Get the current number of likes for the tweet
-    SELECT num_comments INTO tweet_coms
-    FROM tweet
-    WHERE tweet_id = NEW.tweet_id;
-
-    -- Update the number of likes in the Tweet table
-    UPDATE Tweet
-    SET num_comments = tweet_coms + 1
-    WHERE tweet_id = NEW.tweet_id;
-END;
-//
-DELIMITER ;
-
-
-DELIMITER //
 CREATE PROCEDURE GetTweetsWithUser(
     IN user_name_param VARCHAR(255)
 )
