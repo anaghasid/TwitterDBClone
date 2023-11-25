@@ -40,15 +40,17 @@ def display_tweet(tweet):
     if st.button(f"**@{tweet['user_name']}**",key=f"{tweet['user_name']}{tweet['tweet_id']}"):
         x = get_tweets_with_users(tweet)
         st.warning(f"User is {x[0]['f_name']} {x[0]['l_name']}. Wish them on {x[0]['bday']}")
+        st.warning(f"{x[0]['f_name']} has {x[0]['num_tweets']} tweets")
     st.write(tweet['tweet_content'])
     st.write(f"🕒 {tweet['time_stamp']}")
 
 def get_tweets_with_users(tweet):
     query = f"""
-    SELECT t.user_name, u.first_name as f_name, u.last_name as l_name, u.birthday as bday
+    SELECT t.user_name, u.first_name as f_name, u.last_name as l_name, u.birthday as bday, COUNT(*) as num_tweets
     FROM Tweet t
     JOIN User u ON t.user_name = u.user_name
     WHERE u.user_name = "{tweet['user_name']}"
+    GROUP BY t.user_name
     """
     user_tweets = execute_query(query)
     return user_tweets
@@ -172,13 +174,13 @@ def main():
 
 
 
-user = {'user_name': 'john_doe', 'first_name': 'John', 'last_name': 'Doe', 
-        'passwd': 'abcd', 'email_id': 'john.doe@email.com', 
-        'birthday': '1990-05-15', 'bio': 'I love coding!', 'num_followers': 100, 'num_following': 50}
+# user = {'user_name': 'john_doe', 'first_name': 'John', 'last_name': 'Doe', 
+#         'passwd': 'abcd', 'email_id': 'john.doe@email.com', 
+#         'birthday': '1990-05-15', 'bio': 'I love coding!', 'num_followers': 100, 'num_following': 50}
 
-# user = {'user_name': 'priya_1985', 'first_name': 'Priya', 'last_name': 'Sharma', 'passwd': 'samplepass', 
-#         'email_id': 'priya@gmail.com', 'birthday': '1990-08-22', 
-#             'bio': 'Travel lover and foodie.', 'num_followers': 150, 'num_following': 100}
+user = {'user_name': 'priya_1985', 'first_name': 'Priya', 'last_name': 'Sharma', 'passwd': 'samplepass', 
+        'email_id': 'priya@gmail.com', 'birthday': '1990-08-22', 
+            'bio': 'Travel lover and foodie.', 'num_followers': 150, 'num_following': 100}
 
 main()
 

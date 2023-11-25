@@ -29,6 +29,7 @@ CREATE TABLE comment (
     time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (commenting_user) REFERENCES user(user_name),
     FOREIGN KEY (tweet_id) REFERENCES tweet(tweet_id)
+    ON DELETE CASCADE
 );
 
 CREATE TABLE Likes_Tweet (
@@ -37,6 +38,7 @@ CREATE TABLE Likes_Tweet (
     PRIMARY KEY (user_name, tweet_id),
     FOREIGN KEY (user_name) REFERENCES user(user_name),
     FOREIGN KEY (tweet_id) REFERENCES tweet(tweet_id)
+    ON DELETE CASCADE
 );
 
 
@@ -190,4 +192,19 @@ BEGIN
     WHERE tweet_id = NEW.tweet_id;
 END;
 //
+DELIMITER ;
+
+
+DELIMITER //
+CREATE PROCEDURE GetTweetsWithUser(
+    IN user_name_param VARCHAR(255)
+)
+BEGIN
+    SELECT t.tweet_id, t.user_name, t.tweet_content, t.time_stamp, t.num_likes, t.num_retweets,
+           u.first_name, u.last_name
+    FROM Tweet t
+    JOIN User u ON t.user_name = u.user_name
+    WHERE t.user_name = user_name_param
+    ORDER BY t.time_stamp DESC;
+END //
 DELIMITER ;
